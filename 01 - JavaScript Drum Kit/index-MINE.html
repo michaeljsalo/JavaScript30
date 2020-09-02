@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>JS Drum Kit</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+
+  <div class="keys">
+    <div data-key="65" class="key">
+      <kbd>A</kbd>
+      <span class="sound">clap</span>
+    </div>
+    <div data-key="83" class="key">
+      <kbd>S</kbd>
+      <span class="sound">hihat</span>
+    </div>
+    <div data-key="68" class="key">
+      <kbd>D</kbd>
+      <span class="sound">kick</span>
+    </div>
+    <div data-key="70" class="key">
+      <kbd>F</kbd>
+      <span class="sound">openhat</span>
+    </div>
+    <div data-key="71" class="key">
+      <kbd>G</kbd>
+      <span class="sound">boom</span>
+    </div>
+    <div data-key="72" class="key">
+      <kbd>H</kbd>
+      <span class="sound">ride</span>
+    </div>
+    <div data-key="74" class="key">
+      <kbd>J</kbd>
+      <span class="sound">snare</span>
+    </div>
+    <div data-key="75" class="key">
+      <kbd>K</kbd>
+      <span class="sound">tom</span>
+    </div>
+    <div data-key="76" class="key">
+      <kbd>L</kbd>
+      <span class="sound">tink</span>
+    </div>
+  </div>
+
+  <audio data-key="65" src="sounds/clap.wav"></audio>
+  <audio data-key="83" src="sounds/hihat.wav"></audio>
+  <audio data-key="68" src="sounds/kick.wav"></audio>
+  <audio data-key="70" src="sounds/openhat.wav"></audio>
+  <audio data-key="71" src="sounds/boom.wav"></audio>
+  <audio data-key="72" src="sounds/ride.wav"></audio>
+  <audio data-key="74" src="sounds/snare.wav"></audio>
+  <audio data-key="75" src="sounds/tom.wav"></audio>
+  <audio data-key="76" src="sounds/tink.wav"></audio>
+
+<script>
+/*
+ * I'm doing #JavaScript30 in September 2020
+ *
+ * This is my solution to lesson number 01.
+ *
+ * Mine is somewhat longer than Wes's solution.
+ *
+ * One difference is I've separated playing sounds and showing animations
+ * into separate functions.
+
+ * Another difference is I always choose to decouple event handlers
+ * from functionality.
+ *
+ * One more difference is I've delegated event handling to a parent,
+ * instead of setting handlers on child elements.
+ *
+ * I'm experimenting with semicolon-free style in this code.
+ *
+ * Michael J Salo
+ * 1 Sept 2020
+ */
+
+function playSound (keyCode) {
+  const audioElement = document.querySelector(`audio[data-key="${keyCode}"]`)
+  if (audioElement) {
+    highlightKey(keyCode)
+    audioElement.currentTime = 0
+    audioElement.play()
+  }
+}
+
+function highlightKey (keyCode) {
+  const keyElement = document.querySelector(`.key[data-key="${keyCode}"]`)
+  if (keyElement) {
+    keyElement.classList.add('playing')
+  }
+}
+
+function unhighlightKey (keyCode) {
+  const keyElement = document.querySelector(`.key[data-key="${keyCode}"]`)
+  if (keyElement) {
+    keyElement.classList.remove('playing')
+  }
+}
+
+function handleKey (event) {
+  const keyCode = event.keyCode
+  playSound(keyCode)
+}
+
+function handleClick (event) {
+  const keyElement = event.target.closest('.key')
+  if (keyElement) {
+    const keyCode = keyElement.dataset.key
+    playSound(keyCode)
+  }
+}
+
+function handleTransitionEnd (event) {
+  const keyElement = event.target.closest('.key')
+  if (keyElement) {
+    const keyCode = keyElement.dataset.key
+    unhighlightKey(keyCode)
+  }
+}
+
+function init () {
+  document.addEventListener('keydown', handleKey)
+  document.querySelector('.keys').addEventListener('click', handleClick)
+  document.querySelector('.keys').addEventListener('transitionend', handleTransitionEnd)
+}
+init()
+
+</script>
+
+
+</body>
+</html>
