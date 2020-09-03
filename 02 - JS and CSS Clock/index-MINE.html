@@ -67,33 +67,59 @@
       transition: all 0.1s ease;
     }
 
+    .hour-hand { background: red; }
+    .min-hand { background: green; }
+    .second-hand { background: blue; }
+
   </style>
 
   <script>
+/*
+ * My solution to #JavaScript30 lesson 02.
+ *
+ * Differences in my approach versus Wes Bos:
+ *
+ * I went with setTimeout instead of setInterval,
+ * to avoid the potential of flooding the queue.
+ *
+ * I chose to establish a closure, to share variables
+ * with the update function.
+ *
+ * I solved the animation glitch that happens at
+ * 360 degrees, by counting beyond 360 degrees,
+ * instead of resetting to zero degrees.
+ *
+ * I've also added colors to the clock hands,
+ * to distingush which is which.
+ *
+ * Michael J Salo
+ * 2 Sept 2020
+ */
 
 function startClock () {
-    console.log('startClock')
-    const secondHand = document.querySelector('.second-hand')
-    const minuteHand = document.querySelector('.min-hand')
     const hourHand = document.querySelector('.hour-hand')
+    const minuteHand = document.querySelector('.min-hand')
+    const secondHand = document.querySelector('.second-hand')
 
-    let date, seconds, minutes, hours
-    let secondsDegrees, minutesDegrees, hoursDegrees
+    let date, hours, minutes, seconds
+    let hoursDegrees, minutesDegrees, secondsDegrees
 
     function updateClock () {
         date = new Date()
-        seconds = date.getSeconds()
-        minutes = date.getMinutes()
+
+        // Count total time since 12:00:00
         hours = date.getHours() % 12
-        console.log('updateClock', hours, minutes, seconds)
+        minutes = 60 * hours + date.getMinutes()
+        seconds = 60 * minutes + date.getSeconds()
 
-        secondsDegrees = ((seconds / 60) * 360) + 90
-        minutesDegrees = ((minutes / 60) * 360) + 90
-        hoursDegrees = ((hours / 12) * 360) + 90
+        // Translate times to degrees beyond 360
+        hoursDegrees = Math.floor(30 * hours) + 90
+        minutesDegrees = Math.floor(6 * minutes) + 90
+        secondsDegrees = Math.floor(6 * seconds) + 90
 
-        secondHand.style.transform = `rotate(${secondsDegrees}deg)`
-        minuteHand.style.transform = `rotate(${minutesDegrees}deg)`
         hourHand.style.transform = `rotate(${hoursDegrees}deg)`
+        minuteHand.style.transform = `rotate(${minutesDegrees}deg)`
+        secondHand.style.transform = `rotate(${secondsDegrees}deg)`
 
         window.setTimeout(updateClock, 1000)
     }
