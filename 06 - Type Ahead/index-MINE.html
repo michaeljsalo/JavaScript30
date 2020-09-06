@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Type Ahead 👀</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <form class="search-form">
+    <input type="text" class="search" placeholder="City or State">
+    <ul class="suggestions">
+      <li>Filter for a city</li>
+      <li>or a state</li>
+    </ul>
+  </form>
+<script>
+
+/*
+ * #JavaScript30 lesson 06
+ *
+ * Really good exercise today.
+ *
+ * A chance to implement a very typical real world user interface,
+ * without any UI library or framework.
+ *
+ * I choose to take advantage of a couple of JS features that Wes doesn't:
+ *
+ * DOM 'input' event is better suited to this than the 'change' event.
+ * Numbers have access to a toLocaleString method, to format with commas.
+ *
+ * One bit I'm dissatisfied with is the RegExp is created twice.
+ * I didn't see a clean way to avoid it that makes sense.
+ *
+ * Michael J Salo
+ * 6 Sept 2020
+ */
+
+const endpoint = 'https://gist.githubusercontent.com/Miserlou/c5cd8364bf9b2420bb29/raw/2bf258763cdddd704f8ffd3ea9a3e81d25e2c6f6/cities.json';
+
+const input = document.querySelector('input.search')
+const suggestions = document.querySelector('ul.suggestions')
+
+let cities = []
+const data = fetch(endpoint)
+  .then(response => response.json())
+  .then(data => cities = data)
+
+function findMatches (searchString = '') {
+  const matchPattern = new RegExp(searchString, 'gi')
+  const matches = cities.filter(item => matchPattern.test(item.city) || matchPattern.test(item.state))
+  return matches
+}
+
+function displayMatches (matches = [], searchString = '') {
+  const matchPattern = new RegExp(searchString, 'gi')
+  const suggestionMarkup = matches.map(match => {
+    const cityDisplay = match.city.replace(matchPattern, `<span class="hl">${searchString}</span>`)
+    const stateDisplay = match.state.replace(matchPattern, `<span class="hl">${searchString}</span>`)
+    const populationDisplay = Number(match.population).toLocaleString()
+    return `
+      <li>
+        <span>${cityDisplay}, ${stateDisplay}</span>
+        <span>${populationDisplay}</span>
+      </li>
+    `
+  }).join('')
+  suggestions.innerHTML = suggestionMarkup
+}
+
+function handleInput (event) {
+  const searchString = event.target.value.trim()
+  const matches = findMatches(searchString)
+  displayMatches(matches, searchString)
+}
+
+input.addEventListener('input', handleInput)
+
+</script>
+</body>
+</html>
