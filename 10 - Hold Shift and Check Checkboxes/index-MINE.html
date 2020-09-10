@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Hold Shift to Check Multiple Checkboxes</title>
+</head>
+<body>
+  <style>
+
+    html {
+      font-family: sans-serif;
+      background: #ffc600;
+    }
+
+    .inbox {
+      max-width: 400px;
+      margin: 50px auto;
+      background: white;
+      border-radius: 5px;
+      box-shadow: 10px 10px 0 rgba(0,0,0,0.1);
+    }
+
+    .item {
+      display: flex;
+      align-items: center;
+      border-bottom: 1px solid #F1F1F1;
+    }
+
+    .item:last-child {
+      border-bottom: 0;
+    }
+
+    input:checked + p {
+      background: #F9F9F9;
+      text-decoration: line-through;
+    }
+
+    input[type="checkbox"] {
+      margin: 20px;
+    }
+
+    p {
+      margin: 0;
+      padding: 20px;
+      transition: background 0.2s;
+      flex: 1;
+      font-family:'helvetica neue';
+      font-size: 20px;
+      font-weight: 200;
+      border-left: 1px solid #D1E2FF;
+    }
+  </style>
+   <!--
+   The following is a common layout you would see in an email client.
+
+   When a user clicks a checkbox, holds Shift, and then clicks another checkbox a few rows down, all the checkboxes inbetween those two checkboxes should be checked.
+
+  -->
+  <div class="inbox">
+    <div class="item">
+      <input type="checkbox">
+      <p>This is an inbox layout.</p>
+    </div>
+    <div class="item">
+      <input type="checkbox">
+      <p>Check one item</p>
+    </div>
+    <div class="item">
+      <input type="checkbox">
+      <p>Hold down your Shift key</p>
+    </div>
+    <div class="item">
+      <input type="checkbox">
+      <p>Check a lower item</p>
+    </div>
+    <div class="item">
+      <input type="checkbox">
+      <p>Everything in between should also be set to checked</p>
+    </div>
+    <div class="item">
+      <input type="checkbox">
+      <p>Try to do it without any libraries</p>
+    </div>
+    <div class="item">
+      <input type="checkbox">
+      <p>Just regular JavaScript</p>
+    </div>
+    <div class="item">
+      <input type="checkbox">
+      <p>Good Luck!</p>
+    </div>
+    <div class="item">
+      <input type="checkbox">
+      <p>Don't forget to tweet your result!</p>
+    </div>
+  </div>
+
+<script>
+/* #JavaScript30 lesson 10
+ *
+ * Good challenge today.
+ * My approach is somewhat different than the presented one.
+ * I select a range of checkboxes in the DOM.
+ * I start at the shift-clicked checkbox and move upward.
+ * I check each checkbox one by one, until finding one already checked.
+ *
+ * An advantage is I don't care about the user's 'last click.'
+ * A disadvantage is it only works in a single direction.
+ * Not perfect but it's what I came up with on first try.
+ *
+ * Michael J Salo
+ * 10 Sept 2020
+ */
+
+const inbox = document.querySelector('.inbox')
+const checkboxes = Array.from(inbox.querySelectorAll('.item input[type=checkbox]'))
+
+function checkUpward (index) {
+  const checkboxRange = checkboxes.slice(0, index).reverse()
+  for (checkbox of checkboxRange) {
+    if (checkbox.checked) {
+      break
+    } else {
+      checkbox.checked = true
+    }
+  }
+}
+
+function handleClick (event) {
+  const clickedElement = event.target.closest('input')
+  if (clickedElement) {
+    const clickedIndex = checkboxes.indexOf(clickedElement)
+    if (clickedIndex) {
+      if (event.shiftKey && event.target.checked) {
+        checkUpward(clickedIndex)
+      }
+    }
+  }
+}
+
+function init () {
+  inbox.addEventListener('click', handleClick)
+}
+
+init()
+
+</script>
+</body>
+</html>
