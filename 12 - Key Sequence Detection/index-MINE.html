@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Key Detection</title>
+  <script type="text/javascript" src="https://www.cornify.com/js/cornify.js"></script>
+</head>
+<body>
+<script>
+/* #JavaScript30 lesson 12
+ *
+ * Wes keeps an array of user input, and searches it repeatedly for a match.
+ * I choose to track just the user's progress in the secret code.
+ * It makes for a simple match in constant time.
+ *
+ * Michael J Salo
+ * 12 Sept 2020
+ */
+
+// const secretCode = 'iscool'
+const secretCode = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a']
+
+// Track the user's progress in the secret code
+let secretIndex = 0
+
+function handleKey (event) {
+  if (event.key === secretCode[secretIndex]) {
+    secretIndex += 1
+    if (secretIndex === secretCode.length) {
+      secretIndex = 0
+      console.log('SECRET CODE DETECTED')
+      cornify_add()
+    }
+  } else {
+    secretIndex = 0
+  }
+  console.log(secretIndex)
+}
+
+document.addEventListener('keyup', handleKey)
+</script>
+</body>
+</html>
