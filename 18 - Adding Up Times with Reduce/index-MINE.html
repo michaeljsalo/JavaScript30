@@ -184,9 +184,20 @@
 <script>
 
 function parseSeconds (totalSeconds = 0) {
-  const hours = Math.floor(totalSeconds / 60 / 60)
-  const minutes = Math.floor(totalSeconds / 60) - (60 * hours)
+
+  // Left to right approach
+  // const hours = Math.floor(totalSeconds / 60 / 60)
+  // const minutes = Math.floor(totalSeconds / 60) - (60 * hours)
+  // const seconds = totalSeconds % 60
+
+  // Right to left approach
+  // Treat like a base 60 number
   const seconds = totalSeconds % 60
+  totalSeconds = Math.floor(totalSeconds / 60)
+  const minutes = totalSeconds % 60
+  totalSeconds = Math.floor(totalSeconds / 60)
+  const hours = totalSeconds % 60
+
   return { hours, minutes, seconds }
 }
 
